@@ -1,0 +1,26 @@
+{
+  "name": "罗马地名回声",
+  "short_name": "罗马地名",
+  "description": "从可旋转地球仪进入《罗马帝国衰亡史》古地名世界的读书游戏。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a1c26",
+  "theme_color": "#173946",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
