@@ -1,5 +1,4 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light dark"><meta name="description" content="从可旋转地球仪进入罗马世界的地名探索游戏。"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="罗马地名"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="icon" type="image/svg+xml" href="./icon.svg"><title>罗马地名回声 · iPhone 版</title><style>:root {
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light dark"><meta name="description" content="自由探索罗马世界的古地名地球仪。"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="罗马地名"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png"><link rel="icon" type="image/svg+xml" href="./icons/icon.svg"><title>罗马地名回声</title><style>:root {
   color-scheme: light dark;
   background-color: var(--background) !important;
 
@@ -726,7 +725,286 @@ svg {
 .text-destructive {
   color: var(--destructive);
 }
-</style><style>html{min-height:100%;background:var(--background);overscroll-behavior-y:none}html>body{min-height:100vh;margin:0;padding:24px 18px 56px;color:var(--foreground);background:radial-gradient(circle at 8% 0%,color-mix(in srgb,var(--viz-series-2) 11%,transparent),transparent 32rem),radial-gradient(circle at 95% 12%,color-mix(in srgb,var(--viz-series-1) 9%,transparent),transparent 36rem),var(--background);-webkit-tap-highlight-color:transparent}.roman-page{display:grid;width:min(100%,1600px);margin:0 auto;gap:22px}.roman-page-header{display:grid;gap:6px;max-width:74ch;padding-inline:2px}.roman-page-header h1{font-size:calc(var(--font-size-base)*2.25);letter-spacing:-.025em}.roman-page-header p{color:var(--muted-foreground)}.roman-page-kicker{display:inline-flex;width:fit-content;align-items:center;gap:7px;color:var(--accent-foreground)}.roman-page-kicker::before{width:7px;height:7px;border-radius:var(--radius-full);background:var(--viz-series-2);content:""}.ios-install-tip{display:none}.ios-install-tip.is-visible{display:grid;gap:3px}.ios-install-tip strong{font-weight:500}@supports(padding:max(0px)){html>body{padding-top:max(24px,env(safe-area-inset-top));padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right));padding-bottom:max(56px,env(safe-area-inset-bottom))}}@media(display-mode:standalone){.ios-install-tip{display:none!important}}@media(max-width:560px){@supports(padding:max(0px)){html>body{padding-top:max(14px,env(safe-area-inset-top));padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right));padding-bottom:max(28px,env(safe-area-inset-bottom))}}.roman-page{gap:16px}.roman-page-header h1{letter-spacing:-.015em}}</style></head><body><main class="roman-page"><section class="card ios-install-tip" id="ios-install-tip"><strong>把游戏装进 iPhone</strong><span class="text-small text-muted">在 Safari 点击“分享”，再选择“添加到主屏幕”。</span></section><header class="roman-page-header"><span class="roman-page-kicker text-small">iPhone 版 · 52 处地点 · 12 个地区页 · 5 条历史路线</span><h1>罗马地名回声</h1><p>拖动地球旋转，点击陆地、双击或使用缩放按钮继续靠近。最高可放大到 900%。</p></header>
+</style><style>html {
+  height: 100%;
+  background: var(--background);
+  overscroll-behavior: none;
+}
+
+html > body.app-shell {
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 0 !important;
+  overflow: hidden;
+  color: var(--foreground);
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      color-mix(in srgb, var(--viz-series-1) 15%, transparent),
+      transparent 55%
+    ),
+    var(--background);
+  -webkit-tap-highlight-color: transparent;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+}
+
+.app-shell .roman-page {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-shell .ios-install-tip,
+.app-shell .roman-page-header,
+.app-shell .game-hud,
+.app-shell .view-mode,
+.app-shell .page-mode,
+.app-shell .page-nav,
+.app-shell .route-note,
+.app-shell .terrain-note,
+.app-shell .map-stage {
+  display: none !important;
+}
+
+.app-shell #gibbon-map-game {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  gap: 0;
+}
+
+.app-shell #gibbon-map-game .globe-stage {
+  position: absolute;
+  inset: 0;
+  display: block !important;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+}
+
+.app-shell #gibbon-map-game .globe-toolbar,
+.app-shell #gibbon-map-game .globe-regions {
+  display: none !important;
+}
+
+.app-shell #gibbon-map-game .globe-viewport {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(94vw, 700px);
+  height: auto;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+.app-shell.has-story #gibbon-map-game .globe-viewport {
+  top: 54%;
+  left: 30%;
+  width: min(82vw, 620px);
+}
+
+.app-shell #gibbon-map-game .globe-marker-label {
+  display: none !important;
+}
+
+.app-shell.app-zoomed #gibbon-map-game .globe-marker-label {
+  display: inline-block !important;
+}
+
+.app-shell.has-story #gibbon-map-game .globe-marker-label {
+  display: none !important;
+}
+
+.app-topbar {
+  position: absolute;
+  z-index: 30;
+  top: calc(9px + env(safe-area-inset-top));
+  right: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--background) 84%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.app-brand-mark {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  font-weight: 500;
+}
+
+.app-brand-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0;
+  line-height: 1.25;
+}
+
+.app-brand-copy strong {
+  font-weight: 500;
+}
+
+.app-topbar .btn {
+  background: color-mix(in srgb, var(--background) 64%, transparent);
+}
+
+.app-controls {
+  position: absolute;
+  z-index: 28;
+  top: calc(72px + env(safe-area-inset-top));
+  right: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.app-controls .btn {
+  background: color-mix(in srgb, var(--background) 84%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.app-hint {
+  position: absolute;
+  z-index: 26;
+  right: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  width: max-content;
+  max-width: min(90vw, 360px);
+  padding: 7px 12px;
+  transform: translateX(50%);
+  color: var(--muted-foreground);
+  background: color-mix(in srgb, var(--background) 82%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(12px);
+  text-align: center;
+}
+
+.app-shell.has-story .app-hint {
+  display: none;
+}
+
+.app-shell #gibbon-map-game .story-card {
+  --foreground: rgb(0 0 0);
+  --card-foreground: rgb(0 0 0);
+  --muted-foreground: rgb(0 0 0 / 72%);
+  --border: rgb(0 0 0 / 42%);
+  --secondary: transparent;
+  --secondary-foreground: rgb(0 0 0);
+  --primary: rgb(235 204 119);
+  --primary-foreground: rgb(12 31 39);
+  --accent: rgb(235 204 119 / 16%);
+  --accent-foreground: rgb(0 0 0);
+  --input: rgb(255 255 255 / 24%);
+  --ring: rgb(235 204 119 / 64%);
+  display: none;
+  position: absolute;
+  z-index: 60;
+  top: calc(76px + env(safe-area-inset-top));
+  right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  left: auto;
+  width: min(68vw, 330px);
+  max-height: none;
+  margin: 0;
+  padding-top: 48px;
+  overflow: auto;
+  color: var(--foreground);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  text-shadow: none;
+}
+
+.app-shell.has-story #gibbon-map-game .story-card {
+  display: grid;
+}
+
+.app-shell #gibbon-map-game .story-card .answer-option {
+  color: rgb(0 0 0);
+  background: transparent;
+  border-color: rgb(0 0 0 / 42%);
+}
+
+.app-shell #gibbon-map-game .story-card .answer-option:not(:disabled):hover {
+  background: rgb(255 255 255 / 7%);
+}
+
+.app-shell #gibbon-map-game .story-card .btn-primary {
+  color: rgb(0 0 0);
+  background: transparent;
+  border-color: rgb(0 0 0 / 52%);
+}
+
+.app-shell #gibbon-map-game .story-card .btn-primary:not(:disabled):hover {
+  background: rgb(235 204 119 / 10%);
+}
+
+.app-shell #gibbon-map-game .story-card .story-rule,
+.app-shell #gibbon-map-game .story-card .quiz-top,
+.app-shell #gibbon-map-game .story-card .quiz-locked > span {
+  display: none !important;
+}
+
+.app-story-close {
+  position: absolute;
+  z-index: 80;
+  top: calc(84px + env(safe-area-inset-top));
+  right: 18px;
+  display: none;
+  color: rgb(248 246 238);
+  background: rgb(8 28 36 / 72%);
+  border-color: rgb(235 207 132 / 36%);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.app-shell.has-story .app-story-close {
+  display: inline-flex;
+}
+
+@media (display-mode: standalone) {
+  .app-topbar {
+    top: calc(8px + env(safe-area-inset-top));
+  }
+}
+
+@media (orientation: landscape) and (min-width: 650px) {
+  .app-shell #gibbon-map-game .story-card {
+    width: min(38vw, 380px);
+  }
+
+  .app-shell.has-story #gibbon-map-game .globe-viewport {
+    top: 52%;
+    left: 34%;
+    width: min(64vw, 620px);
+  }
+}
+</style></head><body class="app-shell"><header class="card app-topbar"><div class="app-brand"><span class="app-brand-mark" aria-hidden="true">R</span><div class="app-brand-copy"><strong>罗马地名回声</strong><span class="text-small text-muted" id="app-date-label">自由探索</span></div></div><button type="button" class="btn btn-ghost" id="app-reset">回地中海</button></header><div class="app-controls" role="group" aria-label="地图缩放"><button type="button" class="btn" id="app-zoom-in" aria-label="放大">+</button><button type="button" class="btn" id="app-zoom-out" aria-label="缩小">−</button></div><div class="app-hint text-small">拖动旋转 · 点击光点查看故事 · 双指或双击放大</div><button type="button" class="btn app-story-close" id="app-story-close">收起故事</button><main class="roman-page">
 <div id="gibbon-map-game" class="is-globe">
   <style>
     #gibbon-map-game {
@@ -3906,6 +4184,25 @@ svg {
     renderGlobe();
   }
 
+  window.romanGlobeApp = {
+    focusRoute(ids, zoom = 1.7) {
+      const targets = places.filter((place) => ids.includes(place.id));
+      if (targets.length === 0) {
+        return;
+      }
+      state.globeFocusIds = new Set(ids);
+      const centerLon =
+        targets.reduce((sum, place) => sum + place.lon, 0) / targets.length;
+      const centerLat =
+        targets.reduce((sum, place) => sum + place.lat, 0) / targets.length;
+      animateGlobeTo(centerLon, centerLat, zoom);
+    },
+    resetOverview() {
+      state.globeFocusIds = null;
+      animateGlobeTo(18, 35, 1);
+    }
+  };
+
   function renderPage(index, selectFirst) {
     state.pageIndex = index;
     const page = pages[index];
@@ -4081,4 +4378,62 @@ svg {
   initGlobe();
 </script>
 
-</main><script>(()=>{const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);const isStandalone=window.navigator.standalone===true||window.matchMedia("(display-mode: standalone)").matches;const installTip=document.getElementById("ios-install-tip");if(isIOS&&!isStandalone&&installTip!=null){installTip.classList.add("is-visible");}if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>{navigator.serviceWorker.register("./sw.js").catch(error=>console.warn("Offline cache could not be registered.",error));});}})();</script></body></html>
+</main><script>(() => {
+  const body = document.body;
+  const storyClose = document.getElementById("app-story-close");
+  const resetButton = document.getElementById("app-reset");
+  const zoomValue = document.getElementById("globe-zoom-value");
+  const dateLabel = document.getElementById("app-date-label");
+
+  dateLabel.textContent = new Intl.DateTimeFormat("zh-CN", {
+    month: "long",
+    day: "numeric",
+    weekday: "short"
+  }).format(new Date());
+
+  function closeStory() {
+    body.classList.remove("has-story");
+    storyClose.style.display = "none";
+  }
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      const marker = event.target.closest?.(".globe-marker");
+      if (marker == null) {
+        return;
+      }
+      body.classList.add("has-story");
+      storyClose.style.display = "inline-flex";
+      setTimeout(() => window.scrollTo(0, 0), 0);
+    },
+    true
+  );
+
+  storyClose.addEventListener("click", closeStory);
+  resetButton.addEventListener("click", () => {
+    closeStory();
+    window.romanGlobeApp.resetOverview();
+  });
+
+  document
+    .getElementById("app-zoom-in")
+    .addEventListener("click", () =>
+      document.getElementById("globe-zoom-in").click()
+    );
+  document
+    .getElementById("app-zoom-out")
+    .addEventListener("click", () =>
+      document.getElementById("globe-zoom-out").click()
+    );
+
+  new MutationObserver(() => {
+    const zoom = parseInt(zoomValue.textContent, 10) || 100;
+    body.classList.toggle("app-zoomed", zoom >= 135);
+  }).observe(zoomValue, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+})();
+</script><script>(()=>{if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}})();</script></body></html>
