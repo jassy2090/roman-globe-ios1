@@ -1,13 +1,12 @@
-const CACHE_NAME = "roman-globe-ios-v8";
+const CACHE_NAME = "roman-globe-ios-v10";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./icons/apple-touch-icon.png",
-  "./icons/icon-180.png",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon.svg"
+  "./apple-touch-icon.png",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon.svg"
 ];
 
 self.addEventListener("install", (event) => {

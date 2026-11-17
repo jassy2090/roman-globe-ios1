@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light dark"><meta name="description" content="自由探索罗马世界的古地名地球仪。"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="罗马地名"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png"><link rel="icon" type="image/svg+xml" href="./icons/icon.svg"><title>罗马地名回声</title><style>:root {
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light dark"><meta name="description" content="自由探索罗马世界的古地名地球仪。"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="罗马地名"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="icon" type="image/svg+xml" href="./icon.svg"><title>罗马地名回声</title><style>:root {
   color-scheme: light dark;
   background-color: var(--background) !important;
 
@@ -728,6 +728,7 @@ svg {
 </style><style>html {
   height: 100%;
   background: var(--background);
+  overflow: hidden;
   overscroll-behavior: none;
 }
 
@@ -798,7 +799,7 @@ html > body.app-shell {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(94vw, 700px);
+  width: min(180vw, 1080px);
   height: auto;
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
@@ -994,6 +995,10 @@ html > body.app-shell {
 }
 
 @media (orientation: landscape) and (min-width: 650px) {
+  .app-shell #gibbon-map-game .globe-viewport {
+    width: min(92vh, 820px);
+  }
+
   .app-shell #gibbon-map-game .story-card {
     width: min(38vw, 380px);
   }
