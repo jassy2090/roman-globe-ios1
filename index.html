@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light dark"><meta name="description" content="自由探索罗马世界的古地名地球仪。"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="罗马地名"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png"><link rel="icon" type="image/svg+xml" href="./icon.svg"><title>罗马地名回声</title><style>:root {
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light dark"><meta name="description" content="自由探索罗马世界的古地名地球仪。"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="罗马地名"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png"><link rel="icon" type="image/svg+xml" href="./icons/icon.svg"><title>罗马地名回声</title><style>:root {
   color-scheme: light dark;
   background-color: var(--background) !important;
 
@@ -806,9 +806,9 @@ html > body.app-shell {
 }
 
 .app-shell.has-story #gibbon-map-game .globe-viewport {
-  top: 54%;
-  left: 30%;
-  width: min(82vw, 620px);
+  top: 29%;
+  left: 50%;
+  width: min(112vw, 600px);
 }
 
 .app-shell #gibbon-map-game .globe-marker-label {
@@ -908,61 +908,101 @@ html > body.app-shell {
 }
 
 .app-shell #gibbon-map-game .story-card {
-  --foreground: rgb(0 0 0);
-  --card-foreground: rgb(0 0 0);
-  --muted-foreground: rgb(0 0 0 / 72%);
-  --border: rgb(0 0 0 / 42%);
-  --secondary: transparent;
-  --secondary-foreground: rgb(0 0 0);
+  --foreground: rgb(16 18 17);
+  --card-foreground: rgb(16 18 17);
+  --muted-foreground: rgb(35 35 31 / 78%);
+  --border: rgb(57 49 34 / 32%);
+  --secondary: rgb(255 255 255 / 48%);
+  --secondary-foreground: rgb(16 18 17);
   --primary: rgb(235 204 119);
   --primary-foreground: rgb(12 31 39);
-  --accent: rgb(235 204 119 / 16%);
-  --accent-foreground: rgb(0 0 0);
-  --input: rgb(255 255 255 / 24%);
+  --accent: rgb(235 204 119 / 30%);
+  --accent-foreground: rgb(16 18 17);
+  --input: rgb(255 255 255 / 58%);
   --ring: rgb(235 204 119 / 64%);
   display: none;
   position: absolute;
   z-index: 60;
-  top: calc(76px + env(safe-area-inset-top));
-  right: 10px;
-  bottom: calc(10px + env(safe-area-inset-bottom));
-  left: auto;
-  width: min(68vw, 330px);
+  top: auto;
+  right: 8px;
+  bottom: calc(8px + env(safe-area-inset-bottom));
+  left: 8px;
+  box-sizing: border-box;
+  width: auto;
+  max-width: 760px;
+  height: min(44dvh, 440px);
   max-height: none;
-  margin: 0;
-  padding-top: 48px;
-  overflow: auto;
+  margin: 0 auto;
+  padding: 28px 16px calc(18px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overflow-y: auto;
   color: var(--foreground);
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  background: rgb(247 242 229 / 94%);
+  border: 1px solid rgb(222 203 157 / 78%);
+  border-radius: 24px 24px 18px 18px;
+  box-shadow:
+    0 -12px 34px rgb(5 20 27 / 22%),
+    inset 0 1px 0 rgb(255 255 255 / 82%);
+  -webkit-backdrop-filter: blur(16px) saturate(86%);
+  backdrop-filter: blur(16px) saturate(86%);
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(80 67 42 / 35%) transparent;
   text-shadow: none;
+}
+
+.app-shell #gibbon-map-game .story-card::before {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 42px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(64 57 45 / 28%);
+  content: "";
+  transform: translateX(-50%);
 }
 
 .app-shell.has-story #gibbon-map-game .story-card {
   display: grid;
 }
 
+.app-shell #gibbon-map-game .story-card .story-head {
+  padding-right: 82px;
+}
+
+.app-shell #gibbon-map-game .story-card .story-text {
+  max-width: none;
+  font-size: 17px;
+  line-height: 1.62;
+  text-wrap: pretty;
+}
+
+.app-shell #gibbon-map-game .story-card .viz-badge {
+  color: rgb(26 28 26);
+  background: rgb(255 255 255 / 58%);
+  border-color: rgb(57 49 34 / 24%);
+}
+
 .app-shell #gibbon-map-game .story-card .answer-option {
-  color: rgb(0 0 0);
-  background: transparent;
-  border-color: rgb(0 0 0 / 42%);
+  color: rgb(16 18 17);
+  background: rgb(255 255 255 / 56%);
+  border-color: rgb(57 49 34 / 34%);
 }
 
 .app-shell #gibbon-map-game .story-card .answer-option:not(:disabled):hover {
-  background: rgb(255 255 255 / 7%);
+  background: rgb(236 216 169 / 48%);
 }
 
 .app-shell #gibbon-map-game .story-card .btn-primary {
-  color: rgb(0 0 0);
-  background: transparent;
-  border-color: rgb(0 0 0 / 52%);
+  color: rgb(16 18 17);
+  background: rgb(255 255 255 / 62%);
+  border-color: rgb(57 49 34 / 42%);
 }
 
 .app-shell #gibbon-map-game .story-card .btn-primary:not(:disabled):hover {
-  background: rgb(235 204 119 / 10%);
+  background: rgb(235 204 119 / 30%);
 }
 
 .app-shell #gibbon-map-game .story-card .story-rule,
@@ -974,8 +1014,9 @@ html > body.app-shell {
 .app-story-close {
   position: absolute;
   z-index: 80;
-  top: calc(84px + env(safe-area-inset-top));
-  right: 18px;
+  top: auto;
+  right: max(20px, calc((100vw - 760px) / 2 + 12px));
+  bottom: calc(env(safe-area-inset-bottom) + min(44dvh, 440px) - 38px);
   display: none;
   color: rgb(248 246 238);
   background: rgb(8 28 36 / 72%);
@@ -1000,13 +1041,20 @@ html > body.app-shell {
   }
 
   .app-shell #gibbon-map-game .story-card {
-    width: min(38vw, 380px);
+    right: 10px;
+    left: 10px;
+    width: auto;
+    height: min(54dvh, 360px);
   }
 
   .app-shell.has-story #gibbon-map-game .globe-viewport {
-    top: 52%;
-    left: 34%;
-    width: min(64vw, 620px);
+    top: 27%;
+    left: 50%;
+    width: min(88vw, 620px);
+  }
+
+  .app-story-close {
+    bottom: calc(env(safe-area-inset-bottom) + min(54dvh, 360px) - 38px);
   }
 }
 </style></head><body class="app-shell"><header class="card app-topbar"><div class="app-brand"><span class="app-brand-mark" aria-hidden="true">R</span><div class="app-brand-copy"><strong>罗马地名回声</strong><span class="text-small text-muted" id="app-date-label">自由探索</span></div></div><button type="button" class="btn btn-ghost" id="app-reset">回地中海</button></header><div class="app-controls" role="group" aria-label="地图缩放"><button type="button" class="btn" id="app-zoom-in" aria-label="放大">+</button><button type="button" class="btn" id="app-zoom-out" aria-label="缩小">−</button></div><div class="app-hint text-small">拖动旋转 · 点击光点查看故事 · 双指或双击放大</div><button type="button" class="btn app-story-close" id="app-story-close">收起故事</button><main class="roman-page">
@@ -3283,6 +3331,18 @@ html > body.app-shell {
     state.quizOpen = true;
     state.feedback = null;
     renderDetails();
+    setTimeout(() => {
+      const cardRect = elements.storyCard.getBoundingClientRect();
+      const quizRect = elements.quizPanel.getBoundingClientRect();
+      elements.storyCard.scrollTo({
+        top:
+          elements.storyCard.scrollTop +
+          quizRect.top -
+          cardRect.top -
+          22,
+        behavior: "auto"
+      });
+    }, 0);
   });
 
   elements.nextPlace.addEventListener("click", nextUnsolvedPlace);
@@ -4407,6 +4467,10 @@ html > body.app-shell {
       const marker = event.target.closest?.(".globe-marker");
       if (marker == null) {
         return;
+      }
+      const storyCard = document.getElementById("story-card");
+      if (storyCard != null) {
+        storyCard.scrollTo({ top: 0, behavior: "auto" });
       }
       body.classList.add("has-story");
       storyClose.style.display = "inline-flex";
