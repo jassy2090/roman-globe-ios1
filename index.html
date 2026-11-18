@@ -908,6 +908,7 @@ html > body.app-shell {
 }
 
 .app-shell #gibbon-map-game .story-card {
+  --story-sheet-shift: 0px;
   --foreground: rgb(16 18 17);
   --card-foreground: rgb(16 18 17);
   --muted-foreground: rgb(35 35 31 / 78%);
@@ -933,13 +934,14 @@ html > body.app-shell {
   height: min(44dvh, 440px);
   max-height: none;
   margin: 0 auto;
-  padding: 28px 16px calc(18px + env(safe-area-inset-bottom));
+  padding: 8px 16px calc(18px + env(safe-area-inset-bottom));
   overflow-x: hidden;
   overflow-y: auto;
   color: var(--foreground);
   background: rgb(247 242 229 / 94%);
   border: 1px solid rgb(222 203 157 / 78%);
   border-radius: 24px 24px 18px 18px;
+  transform: translate3d(0, var(--story-sheet-shift), 0);
   box-shadow:
     0 -12px 34px rgb(5 20 27 / 22%),
     inset 0 1px 0 rgb(255 255 255 / 82%);
@@ -949,19 +951,51 @@ html > body.app-shell {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgb(80 67 42 / 35%) transparent;
+  scroll-padding-top: 36px;
   text-shadow: none;
+  transition: transform 220ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  will-change: transform;
 }
 
-.app-shell #gibbon-map-game .story-card::before {
-  position: absolute;
-  top: 8px;
-  left: 50%;
+.app-shell #gibbon-map-game .story-card.is-dragging {
+  cursor: grabbing;
+  transition: none;
+}
+
+.app-shell #gibbon-map-game .story-card.is-dragging * {
+  user-select: none;
+}
+
+.story-sheet-handle {
+  position: sticky;
+  z-index: 4;
+  top: 0;
+  display: grid;
+  width: 88px;
+  height: 28px;
+  justify-self: center;
+  align-self: start;
+  margin-bottom: -8px;
+  place-items: center;
+  color: rgb(64 57 45 / 38%);
+  background: linear-gradient(
+    to bottom,
+    rgb(247 242 229 / 98%) 0 72%,
+    rgb(247 242 229 / 0%) 100%
+  );
+  border-radius: 0 0 12px 12px;
+  cursor: grab;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.story-sheet-handle span {
+  display: block;
   width: 42px;
   height: 4px;
   border-radius: 999px;
   background: rgb(64 57 45 / 28%);
-  content: "";
-  transform: translateX(-50%);
+  pointer-events: none;
 }
 
 .app-shell.has-story #gibbon-map-game .story-card {
@@ -1023,10 +1057,17 @@ html > body.app-shell {
   border-color: rgb(235 207 132 / 36%);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
+  transition: opacity 140ms ease;
 }
 
 .app-shell.has-story .app-story-close {
   display: inline-flex;
+}
+
+.app-shell.sheet-dragging .app-story-close,
+.app-shell.sheet-closing .app-story-close {
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (display-mode: standalone) {
@@ -1733,10 +1774,65 @@ html > body.app-shell {
       box-shadow: 0 0 0 1px var(--primary);
     }
 
-    #gibbon-map-game .globe-marker[aria-pressed="true"] .globe-dot,
-    #gibbon-map-game .globe-marker[data-solved="true"] .globe-dot {
+    #gibbon-map-game
+      .globe-marker[aria-pressed="true"]:not([data-solved="true"])
+      .globe-dot {
       background: var(--viz-series-3);
       box-shadow: 0 0 0 2px color-mix(in srgb, var(--viz-series-3) 28%, transparent);
+    }
+
+    #gibbon-map-game .globe-marker[data-solved="true"] {
+      z-index: 6;
+    }
+
+    #gibbon-map-game .globe-marker[data-solved="true"] .globe-dot {
+      background: var(--primary);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 30%, transparent);
+    }
+
+    #gibbon-map-game .globe-flag {
+      position: absolute;
+      top: -6px;
+      left: 3px;
+      width: 14px;
+      height: 20px;
+      opacity: 0;
+      filter:
+        drop-shadow(0 1px 0 rgb(255 255 255 / 88%))
+        drop-shadow(0 0 1px rgb(60 12 16 / 42%));
+      pointer-events: none;
+      transform: translateY(3px) scale(0.55);
+      transform-origin: 2px 100%;
+      transition:
+        opacity 160ms ease,
+        transform 220ms cubic-bezier(0.2, 0.9, 0.25, 1.25);
+    }
+
+    #gibbon-map-game .globe-flag::before {
+      position: absolute;
+      bottom: 0;
+      left: 2px;
+      width: 1.5px;
+      height: 17px;
+      border-radius: 2px;
+      background: rgb(111 29 34);
+      content: "";
+    }
+
+    #gibbon-map-game .globe-flag::after {
+      position: absolute;
+      top: 0;
+      left: 3px;
+      width: 10px;
+      height: 8px;
+      background: rgb(216 35 44);
+      clip-path: polygon(0 0, 100% 16%, 82% 50%, 100% 84%, 0 100%);
+      content: "";
+    }
+
+    #gibbon-map-game .globe-marker[data-solved="true"] .globe-flag {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
     #gibbon-map-game .globe-marker-label {
@@ -1821,7 +1917,10 @@ html > body.app-shell {
 
     @media (prefers-reduced-motion: reduce) {
       #gibbon-map-game .progress-fill,
-      #gibbon-map-game .pin-dot {
+      #gibbon-map-game .pin-dot,
+      #gibbon-map-game .globe-flag,
+      .app-shell #gibbon-map-game .story-card,
+      .app-story-close {
         transition: none;
       }
     }
@@ -1967,6 +2066,9 @@ html > body.app-shell {
   </div>
 
   <section class="card story-card" id="story-card" aria-live="polite">
+    <div class="story-sheet-handle" id="story-sheet-handle" aria-hidden="true">
+      <span></span>
+    </div>
     <div class="story-head">
       <div class="name-pair">
         <h2 id="ancient-name">Roma</h2>
@@ -3167,8 +3269,16 @@ html > body.app-shell {
   function setPressedStates() {
     root.querySelectorAll(".map-pin, .globe-marker").forEach((button) => {
       const selected = button.dataset.placeId === state.selectedId;
+      const solved = state.solved.has(button.dataset.placeId);
+      const place = places.find((item) => item.id === button.dataset.placeId);
       button.setAttribute("aria-pressed", String(selected));
-      button.dataset.solved = String(state.solved.has(button.dataset.placeId));
+      button.dataset.solved = String(solved);
+      if (place != null) {
+        button.setAttribute(
+          "aria-label",
+          `${place.ancient}，今${place.modern}，${solved ? "已答对" : "未答对"}`
+        );
+      }
     });
   }
 
@@ -4226,6 +4336,7 @@ html > body.app-shell {
       );
       button.innerHTML = `
         <span class="globe-dot" aria-hidden="true"></span>
+        <span class="globe-flag" aria-hidden="true"></span>
         <span class="globe-marker-label text-small">${place.ancient}</span>
       `;
       button.addEventListener("pointerdown", (event) => {
@@ -4446,9 +4557,15 @@ html > body.app-shell {
 </main><script>(() => {
   const body = document.body;
   const storyClose = document.getElementById("app-story-close");
+  const storyCard = document.getElementById("story-card");
+  const storyHandle = document.getElementById("story-sheet-handle");
   const resetButton = document.getElementById("app-reset");
   const zoomValue = document.getElementById("globe-zoom-value");
   const dateLabel = document.getElementById("app-date-label");
+  let sheetDragStartY = null;
+  let sheetDragPointerId = null;
+  let sheetDragDistance = 0;
+  let sheetClosing = false;
 
   dateLabel.textContent = new Intl.DateTimeFormat("zh-CN", {
     month: "long",
@@ -4456,9 +4573,100 @@ html > body.app-shell {
     weekday: "short"
   }).format(new Date());
 
-  function closeStory() {
-    body.classList.remove("has-story");
+  function setStorySheetShift(distance) {
+    storyCard.style.setProperty(
+      "--story-sheet-shift",
+      `${Math.max(0, distance)}px`
+    );
+  }
+
+  function finishClosingStory() {
+    body.classList.remove("has-story", "sheet-dragging", "sheet-closing");
     storyClose.style.display = "none";
+    storyCard.classList.remove("is-dragging");
+    storyCard.scrollTo({ top: 0, behavior: "auto" });
+    setStorySheetShift(0);
+    sheetClosing = false;
+  }
+
+  function closeStory(animate = false) {
+    if (!body.classList.contains("has-story")) {
+      finishClosingStory();
+      return;
+    }
+    if (sheetClosing) {
+      return;
+    }
+    if (!animate) {
+      finishClosingStory();
+      return;
+    }
+    sheetClosing = true;
+    body.classList.remove("sheet-dragging");
+    body.classList.add("sheet-closing");
+    storyCard.classList.remove("is-dragging");
+    setStorySheetShift(Math.max(120, storyCard.offsetHeight + 40));
+    window.setTimeout(finishClosingStory, 230);
+  }
+
+  function beginSheetDrag(event) {
+    if (
+      !body.classList.contains("has-story") ||
+      sheetClosing ||
+      event.button !== 0
+    ) {
+      return;
+    }
+    sheetDragStartY = event.clientY;
+    sheetDragPointerId = event.pointerId;
+    sheetDragDistance = 0;
+    storyCard.classList.add("is-dragging");
+    body.classList.add("sheet-dragging");
+    storyHandle.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  }
+
+  function moveSheetDrag(event) {
+    if (sheetDragPointerId !== event.pointerId) {
+      return;
+    }
+    sheetDragDistance = Math.max(0, event.clientY - sheetDragStartY);
+    setStorySheetShift(sheetDragDistance);
+    event.preventDefault();
+  }
+
+  function endSheetDrag(event) {
+    if (sheetDragPointerId !== event.pointerId) {
+      return;
+    }
+    if (storyHandle.hasPointerCapture?.(event.pointerId)) {
+      storyHandle.releasePointerCapture(event.pointerId);
+    }
+    const closeThreshold = Math.max(
+      72,
+      Math.min(120, storyCard.offsetHeight * 0.22)
+    );
+    const shouldClose = sheetDragDistance >= closeThreshold;
+    sheetDragStartY = null;
+    sheetDragPointerId = null;
+    body.classList.remove("sheet-dragging");
+    storyCard.classList.remove("is-dragging");
+    if (shouldClose) {
+      closeStory(true);
+    } else {
+      setStorySheetShift(0);
+    }
+  }
+
+  function cancelSheetDrag(event) {
+    if (sheetDragPointerId !== event.pointerId) {
+      return;
+    }
+    sheetDragStartY = null;
+    sheetDragPointerId = null;
+    body.classList.remove("sheet-dragging");
+    storyCard.classList.remove("is-dragging");
+    setStorySheetShift(0);
   }
 
   document.addEventListener(
@@ -4468,20 +4676,35 @@ html > body.app-shell {
       if (marker == null) {
         return;
       }
-      const storyCard = document.getElementById("story-card");
-      if (storyCard != null) {
-        storyCard.scrollTo({ top: 0, behavior: "auto" });
+      if (sheetClosing) {
+        return;
       }
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      storyCard.scrollTo({ top: 0, behavior: "auto" });
+      storyCard.classList.remove("is-dragging");
+      setStorySheetShift(reduceMotion ? 0 : 22);
       body.classList.add("has-story");
       storyClose.style.display = "inline-flex";
+      if (!reduceMotion) {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => setStorySheetShift(0));
+        });
+      }
       setTimeout(() => window.scrollTo(0, 0), 0);
     },
     true
   );
 
-  storyClose.addEventListener("click", closeStory);
+  storyHandle.addEventListener("pointerdown", beginSheetDrag);
+  window.addEventListener("pointermove", moveSheetDrag);
+  window.addEventListener("pointerup", endSheetDrag);
+  window.addEventListener("pointercancel", cancelSheetDrag);
+  storyHandle.addEventListener("lostpointercapture", cancelSheetDrag);
+  storyClose.addEventListener("click", () => closeStory(true));
   resetButton.addEventListener("click", () => {
-    closeStory();
+    closeStory(false);
     window.romanGlobeApp.resetOverview();
   });
 
