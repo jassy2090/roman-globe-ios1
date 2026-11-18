@@ -1728,6 +1728,55 @@ html > body.app-shell {
       stroke-width: 1.2;
     }
 
+    #gibbon-map-game .globe-geo-label {
+      paint-order: stroke fill;
+      pointer-events: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      text-rendering: geometricPrecision;
+      transition: opacity 180ms ease;
+      user-select: none;
+    }
+
+    #gibbon-map-game .globe-geo-label--sea {
+      fill: color-mix(in srgb, var(--viz-series-1) 56%, var(--foreground));
+      stroke: color-mix(in srgb, var(--background) 88%, transparent);
+      stroke-width: 3.2px;
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 600;
+      letter-spacing: 2px;
+      opacity: 0.8;
+    }
+
+    #gibbon-map-game .globe-geo-label--island {
+      fill: color-mix(in srgb, var(--foreground) 72%, transparent);
+      stroke: color-mix(in srgb, var(--background) 90%, transparent);
+      stroke-width: 2.8px;
+      font-size: 13px;
+      font-weight: 560;
+      letter-spacing: 0.7px;
+      opacity: 0.88;
+    }
+
+    #gibbon-map-game .globe-geo-label--strait {
+      fill: color-mix(in srgb, rgb(164 83 36) 68%, var(--foreground));
+      stroke: color-mix(in srgb, var(--background) 92%, transparent);
+      stroke-width: 2.7px;
+      font-size: 11.5px;
+      font-weight: 620;
+      letter-spacing: 0.35px;
+      opacity: 0.92;
+    }
+
+    #gibbon-map-game .globe-geo-leader {
+      stroke: color-mix(in srgb, var(--foreground) 48%, transparent);
+      stroke-width: 0.8;
+      stroke-dasharray: 2 3;
+      pointer-events: none;
+      vector-effect: non-scaling-stroke;
+    }
+
     #gibbon-map-game .globe-markers {
       position: absolute;
       inset: 0;
@@ -1988,6 +2037,8 @@ html > body.app-shell {
         <g id="globe-terrain"></g>
         <g id="globe-rivers"></g>
         <g id="globe-roads"></g>
+        <g id="globe-geo-leaders" aria-hidden="true"></g>
+        <g id="globe-geo-labels" aria-hidden="true"></g>
         <circle class="globe-shade" cx="450" cy="450" r="340"></circle>
       </svg>
       <div class="globe-markers" id="globe-markers"></div>
@@ -3141,6 +3192,8 @@ html > body.app-shell {
     globeTerrain: document.getElementById("globe-terrain"),
     globeRivers: document.getElementById("globe-rivers"),
     globeRoads: document.getElementById("globe-roads"),
+    globeGeoLeaders: document.getElementById("globe-geo-leaders"),
+    globeGeoLabels: document.getElementById("globe-geo-labels"),
     globeMarkers: document.getElementById("globe-markers"),
     globeTitle: document.getElementById("globe-title"),
     globeHint: document.getElementById("globe-hint"),
@@ -3977,6 +4030,281 @@ html > body.app-shell {
   let globeTerrainRegions = [];
   let globeTerrainRivers = [];
   let globeTerrainRoads = [];
+  const globeGeoLabels = [
+    {
+      name: "地中海",
+      kind: "sea",
+      lon: 18,
+      lat: 32.3,
+      minZoom: 1,
+      maxZoom: 1.2,
+      size: 20
+    },
+    {
+      name: "黑海",
+      kind: "sea",
+      lon: 34,
+      lat: 43,
+      minZoom: 1,
+      size: 18
+    },
+    {
+      name: "西西里岛",
+      kind: "island",
+      lon: 14.2,
+      lat: 37.55,
+      minZoom: 1,
+      size: 14
+    },
+    {
+      name: "克里特岛",
+      kind: "island",
+      lon: 24.9,
+      lat: 35.2,
+      minZoom: 1,
+      size: 13.5
+    },
+    {
+      name: "塞浦路斯岛",
+      kind: "island",
+      lon: 33.2,
+      lat: 35,
+      minZoom: 1,
+      size: 13
+    },
+    {
+      name: "不列颠岛",
+      kind: "island",
+      lon: -3,
+      lat: 54.2,
+      minZoom: 1.05,
+      size: 13.5
+    },
+    {
+      name: "亚得里亚海",
+      kind: "sea",
+      lon: 16.3,
+      lat: 42.65,
+      minZoom: 1.2,
+      size: 14.5
+    },
+    {
+      name: "第勒尼安海",
+      kind: "sea",
+      lon: 12.1,
+      lat: 39.8,
+      minZoom: 1.2,
+      size: 14
+    },
+    {
+      name: "伊奥尼亚海",
+      kind: "sea",
+      lon: 18.7,
+      lat: 36.8,
+      minZoom: 1.2,
+      size: 14
+    },
+    {
+      name: "爱琴海",
+      kind: "sea",
+      lon: 25.3,
+      lat: 37.45,
+      minZoom: 1.2,
+      size: 14.5
+    },
+    {
+      name: "红海",
+      kind: "sea",
+      lon: 37.3,
+      lat: 23,
+      minZoom: 1.2,
+      size: 15
+    },
+    {
+      name: "撒丁岛",
+      kind: "island",
+      lon: 9,
+      lat: 40.1,
+      minZoom: 1.3,
+      size: 12.5
+    },
+    {
+      name: "墨西拿海峡",
+      kind: "strait",
+      lon: 15.55,
+      lat: 38.2,
+      minZoom: 1.45,
+      size: 11
+    },
+    {
+      name: "达达尼尔海峡",
+      kind: "strait",
+      lon: 26.3,
+      lat: 40.2,
+      minZoom: 1.45,
+      size: 11
+    },
+    {
+      name: "博斯普鲁斯海峡",
+      kind: "strait",
+      lon: 29.1,
+      lat: 41.15,
+      minZoom: 1.45,
+      size: 11
+    },
+    {
+      name: "科西嘉岛",
+      kind: "island",
+      lon: 9.05,
+      lat: 42.15,
+      minZoom: 1.55,
+      size: 11.5
+    },
+    {
+      name: "巴利阿里群岛",
+      kind: "island",
+      lon: 2.6,
+      lat: 39,
+      minZoom: 1.55,
+      size: 11
+    },
+    {
+      name: "利古里亚海",
+      kind: "sea",
+      lon: 8.2,
+      lat: 43.55,
+      minZoom: 1.65,
+      size: 12.5
+    },
+    {
+      name: "巴利阿里海",
+      kind: "sea",
+      lon: 5.2,
+      lat: 40.7,
+      minZoom: 1.65,
+      size: 12
+    },
+    {
+      name: "黎凡特海",
+      kind: "sea",
+      lon: 32,
+      lat: 34,
+      minZoom: 1.65,
+      size: 13
+    },
+    {
+      name: "奥特朗托海峡",
+      kind: "strait",
+      lon: 18.8,
+      lat: 40.2,
+      minZoom: 1.65,
+      size: 10.8
+    },
+    {
+      name: "直布罗陀海峡",
+      kind: "strait",
+      lon: -5.6,
+      lat: 35.9,
+      minZoom: 1.65,
+      size: 11
+    },
+    {
+      name: "罗得岛",
+      kind: "island",
+      lon: 27.9,
+      lat: 36.2,
+      minZoom: 1.75,
+      size: 10.8
+    },
+    {
+      name: "马耳他岛",
+      kind: "island",
+      lon: 14.4,
+      lat: 35.9,
+      minZoom: 1.85,
+      size: 10.5
+    },
+    {
+      name: "博尼法乔海峡",
+      kind: "strait",
+      lon: 9.25,
+      lat: 41.3,
+      minZoom: 1.85,
+      size: 10.5
+    },
+    {
+      name: "优卑亚岛",
+      kind: "island",
+      lon: 23.9,
+      lat: 38.7,
+      minZoom: 1.9,
+      size: 10.5
+    },
+    {
+      name: "亚速海",
+      kind: "sea",
+      lon: 36.6,
+      lat: 46,
+      minZoom: 1.9,
+      size: 12.5
+    },
+    {
+      name: "大西洋",
+      kind: "sea",
+      lon: -9,
+      lat: 40,
+      minZoom: 1.65,
+      size: 15
+    }
+  ];
+  const geoLabelDirections = [
+    [0, 0],
+    [0, -1],
+    [-0.7, -0.7],
+    [0.7, -0.7],
+    [-1, 0],
+    [1, 0],
+    [-0.7, 0.7],
+    [0.7, 0.7],
+    [0, 1],
+    [-0.45, -1],
+    [0.45, -1],
+    [-1, -0.45],
+    [1, -0.45],
+    [-1, 0.45],
+    [1, 0.45],
+    [-0.45, 1],
+    [0.45, 1]
+  ];
+  function createGeoLabelOffsets(maxRadius) {
+    const radii = [0, 20, 32, 44, 58, maxRadius];
+    const offsets = [];
+    radii.forEach((radius) => {
+      geoLabelDirections.forEach(([x, y]) => {
+        if (radius === 0 && (x !== 0 || y !== 0)) {
+          return;
+        }
+        offsets.push([Math.round(x * radius), Math.round(y * radius)]);
+      });
+    });
+    return offsets;
+  }
+  const geoLabelOffsets = {
+    sea: createGeoLabelOffsets(74),
+    island: createGeoLabelOffsets(42),
+    strait: createGeoLabelOffsets(50)
+  };
+  const globeGeoLabelOrder = [...globeGeoLabels].sort((first, second) => {
+    const rank = (label) =>
+      label.minZoom <= 1.05
+        ? 0
+        : label.kind === "strait"
+          ? 1
+          : label.kind === "sea"
+            ? 2
+            : 3;
+    return rank(first) - rank(second) || first.minZoom - second.minZoom;
+  });
   let globeAnimationFrame = 0;
   let globeReady = false;
   const GLOBE_MAX_ZOOM = 9;
@@ -3992,6 +4320,94 @@ html > body.app-shell {
       return globeMidIds;
     }
     return new Set(places.map((place) => place.id));
+  }
+
+  function renderGlobeGeoLabels(center) {
+    const occupied = [];
+    const overlapsAny = (box, boxes) =>
+      boxes.some(
+        (other) =>
+          box.left < other.right &&
+          box.right > other.left &&
+          box.top < other.bottom &&
+          box.bottom > other.top
+      );
+    const zoom = state.globeZoom;
+    const leaderNodes = elements.globeGeoLeaders.querySelectorAll("line");
+    d3.select(elements.globeGeoLabels)
+      .selectAll("text")
+      .each(function showGeoLabel(label, index) {
+        const node = this;
+        const leader = leaderNodes[index];
+        const distance = d3.geoDistance(center, [label.lon, label.lat]);
+        const point = globeProjection([label.lon, label.lat]);
+        const zoomVisible =
+          zoom + 0.001 >= label.minZoom &&
+          (label.maxZoom == null || zoom <= label.maxZoom);
+        const pointVisible =
+          point != null &&
+          Number.isFinite(point[0]) &&
+          Number.isFinite(point[1]) &&
+          distance < Math.PI / 2 - 0.035;
+
+        if (!zoomVisible || !pointVisible) {
+          node.style.display = "none";
+          if (leader != null) leader.style.display = "none";
+          return;
+        }
+
+        const halfWidth = (label.name.length * label.size) / 2 + 5;
+        const halfHeight = label.size * 0.72 + 4;
+        const offsets = geoLabelOffsets[label.kind] ?? geoLabelOffsets.sea;
+        let placement = null;
+        for (const [dx, dy] of offsets) {
+          const x = point[0] + dx;
+          const y = point[1] + dy;
+          const fitsGlobe =
+            Math.hypot(x - 450, y - 450) <= 442 - halfWidth;
+          if (!fitsGlobe) {
+            continue;
+          }
+          const box = {
+            left: x - halfWidth,
+            right: x + halfWidth,
+            top: y - halfHeight,
+            bottom: y + halfHeight
+          };
+          if (!overlapsAny(box, occupied)) {
+            placement = { x, y, box, dx, dy };
+            break;
+          }
+        }
+        if (placement == null) {
+          node.style.display = "none";
+          if (leader != null) leader.style.display = "none";
+          return;
+        }
+
+        const edgeOpacity = Math.max(
+          0.18,
+          Math.min(1, (Math.PI / 2 - 0.035 - distance) / 0.18)
+        );
+        node.style.display = "";
+        node.style.opacity = String(edgeOpacity);
+        node.setAttribute("x", String(placement.x));
+        node.setAttribute("y", String(placement.y));
+        occupied.push(placement.box);
+
+        if (leader != null) {
+          const offsetLength = Math.hypot(placement.dx, placement.dy);
+          const showLeader = label.kind === "strait" || offsetLength > 14;
+          leader.style.display = showLeader ? "" : "none";
+          if (showLeader) {
+            leader.style.opacity = String(edgeOpacity * 0.7);
+            leader.setAttribute("x1", String(point[0]));
+            leader.setAttribute("y1", String(point[1]));
+            leader.setAttribute("x2", String(placement.x));
+            leader.setAttribute("y2", String(placement.y));
+          }
+        }
+      });
   }
 
   function renderGlobe() {
@@ -4032,7 +4448,6 @@ html > body.app-shell {
         .selectAll("path")
         .attr("d", globePath);
     }
-
     const visibleIds = getGlobeFocusIds();
     const center = [centerLon, centerLat];
     root.querySelectorAll(".globe-marker").forEach((marker) => {
@@ -4059,6 +4474,8 @@ html > body.app-shell {
     elements.globeZoomValue.textContent = `${Math.round(
       state.globeZoom * 100
     )}%`;
+    document.body.classList.toggle("app-zoomed", state.globeZoom >= 1.35);
+    renderGlobeGeoLabels(center);
     elements.globeZoomOut.disabled = state.globeZoom <= 1;
     elements.globeZoomIn.disabled = state.globeZoom >= GLOBE_MAX_ZOOM;
     elements.globeHint.textContent =
@@ -4323,6 +4740,24 @@ html > body.app-shell {
       .data(globeTerrainRoads)
       .join("path")
       .attr("class", "globe-road");
+    d3.select(elements.globeGeoLeaders)
+      .selectAll("line")
+      .data(globeGeoLabelOrder)
+      .join("line")
+      .attr("class", "globe-geo-leader")
+      .style("display", "none");
+    d3.select(elements.globeGeoLabels)
+      .selectAll("text")
+      .data(globeGeoLabelOrder)
+      .join("text")
+      .attr(
+        "class",
+        (label) => `globe-geo-label globe-geo-label--${label.kind}`
+      )
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .style("font-size", (label) => `${label.size}px`)
+      .text((label) => label.name);
 
     elements.globeMarkers.replaceChildren();
     places.forEach((place) => {
